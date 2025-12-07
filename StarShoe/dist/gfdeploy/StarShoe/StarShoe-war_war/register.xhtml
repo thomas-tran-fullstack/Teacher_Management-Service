@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title>Register - StarShoe</title>
+    </h:head>
+    <h:body>
+        <div style="position:fixed;inset:0;background-image:url('#{resource['images/background.jpg']}');background-size:cover;background-position:center;">
+            <div style="position:absolute;inset:0;background:rgba(0,0,0,0.45);"></div>
+
+            <h:link outcome="/client/index" style="position:absolute;top:18px;left:16px;z-index:15;background:rgba(0,0,0,0.45);color:#fff;padding:8px 10px;border-radius:8px;text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:8px;"> 
+                <span style="font-size:16px;">←</span>
+                <span>Home</span>
+            </h:link>
+
+            <div style="position:relative;z-index:10;display:flex;align-items:center;justify-content:center;height:100vh;">
+                <div style="width:420px;background:#fff;padding:28px 34px;border-radius:12px;box-shadow:0 12px 30px rgba(0,0,0,0.15);">
+                    <h2 style="text-align:center;margin:4px 0 6px;color:#111;font-size:22px;">Create Your Account</h2>
+                    <p style="text-align:center;color:#666;margin-bottom:14px;">Join StarShoe Today</p>
+                    <h:form>
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;">Full Name</label>
+                        <h:message for="fullName" style="color:red;font-size:12px;" />
+                        <h:inputText id="fullName" value="#{registerMB.fullName}" pt:placeholder="Full Name" required="true" requiredMessage="Full name is required." style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;" />
+
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;">Username</label>
+                        <h:message for="userName" style="color:red;font-size:12px;" />
+                        <h:inputText id="userName" value="#{registerMB.username}" pt:placeholder="Username" required="true" requiredMessage="Username is required." style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;" />
+
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;">Email</label>
+                        <h:message for="email" style="color:red;font-size:12px;" />
+                        <h:inputText id="email" value="#{registerMB.email}" pt:placeholder="Email" required="true" requiredMessage="Email is required." style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;" />
+
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;">Password</label>
+                        <h:message for="pass" style="color:red;font-size:12px;" />
+                        <h:inputSecret id="pass" value="#{registerMB.password}" pt:placeholder="Password" required="true" requiredMessage="Password is required." style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;" />
+
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;">Phone</label>
+                        <h:message for="phone" style="color:red;font-size:12px;" />
+                        <h:inputText id="phone" value="#{registerMB.phone}" pt:placeholder="Phone" required="true" pt:pattern="[0-9]{10,11}" pt:title="Enter 10-11 digits only" requiredMessage="Phone number is required." style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;" />
+
+                        <label style="display:block;margin-bottom:6px;font-weight:600;color:#333;">Address</label>
+                        <h:message for="address" style="color:red;font-size:12px;" />
+                        <h:inputTextarea id="address" value="#{registerMB.address}" pt:placeholder="Address" required="true" requiredMessage="Address is required." style="width:100%;padding:10px;border:1px solid #ddd;border-radius:8px;margin-bottom:12px;min-height:80px;" />
+
+                        <div style="text-align:center;margin-top:8px;">
+                            <h:commandButton value="Create Account" action="#{registerMB.register}" style="background:#ff6a00;color:#fff;padding:10px 18px;border:none;border-radius:8px;font-weight:700;cursor:pointer;" />
+                        </div>
+                    </h:form>
+
+                    <h:messages globalOnly="true" style="color:red;font-size:13px;margin-top:10px;font-weight:700;text-align:center;" />
+                    <p style="text-align:center;margin-top:12px;color:#555;">Already have an account? <h:link outcome="login.xhtml" value="Login here" style="font-weight:700;color:#ff6a00;text-decoration:none;" /></p>
+                </div>
+            </div>
+        </div>
+    </h:body>
+</html>
+

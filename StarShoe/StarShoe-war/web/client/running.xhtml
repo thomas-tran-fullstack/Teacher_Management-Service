@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Running</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/client.css"/>
+    </h:head>
+    <h:body>
+        <ui:include src="/template/client-header.xhtml"/>
+        
+        <!-- Category Header with styled sort -->
+        <div style="max-width:1400px;margin:80px auto 40px auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px;">
+            <div>
+                <h3 style="font-size:32px;font-weight:800;color:#1a1a1a;margin:0;letter-spacing:-0.5px;">Running Collection</h3>
+                <div style="width:80px;height:4px;background:linear-gradient(90deg, #ff6b00, #ffb347);border-radius:4px;margin-top:12px;"></div>
+            </div>
+            <h:form style="margin:0;">
+                <h:selectOneMenu styleClass="select-sort" id="sortSelect" value="#{productClientMB.sortOption}" onchange="submit()" style="padding:10px 16px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:14px;background:#fff;cursor:pointer;transition:all 0.3s ease;font-weight:600;">
+                    <f:selectItem itemValue="A-Z" itemLabel="A → Z"/>
+                    <f:selectItem itemValue="Z-A" itemLabel="Z → A"/>
+                    <f:selectItem itemValue="Low-High" itemLabel="Low → High Price"/>
+                    <f:selectItem itemValue="High-Low" itemLabel="High → Low Price"/>
+                </h:selectOneMenu>
+            </h:form>
+        </div>
+        <h:panelGroup id="productGrid" rendered="#{not empty productClientMB.runningProducts}">
+            <div class="all-products-grid">
+                <ui:repeat value="#{productClientMB.runningProducts}" var="p">
+                    <!--                <div class="product-card">-->
+                    <a href="/StarShoe-war/client/product-detail.xhtml?id=#{p.productID}" class="product-card fly-up" style="margin-top: 50px;">
+
+                        <div class="product-img-wrap">
+                            <img src="#{resource['images/products/' += p.image]}" alt="#{p.productName}" />
+                        </div>
+
+                        <div class="product-name">#{p.productName}</div>
+
+                        <div class="product-price">
+                            <h:outputText value="#{p.price}">
+                                <f:convertNumber type="currency" currencySymbol="$" groupingUsed="true"/>
+                            </h:outputText>
+                        </div>
+
+                        <div class="stars" >
+                            <ui:repeat value="#{[1,2,3,4,5]}" var="i">
+                                <h:outputText style="color: gold; font-size:18px;" value="#{i le p.averageRating ? '★' : '☆'}" />
+                            </ui:repeat>
+                            (#{p.averageRating})
+                        </div>
+                    </a>
+                    <!--                </div>-->
+                </ui:repeat>
+            </div>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{empty productClientMB.runningProducts}">
+            <p>No Running products found.</p>
+        </h:panelGroup>
+        <ui:include src="/template/footer.xhtml" />
+    </h:body>
+</html>

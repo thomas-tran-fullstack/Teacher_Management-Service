@@ -1,0 +1,56 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Sneaker</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/client.css"/>
+    </h:head>
+    <h:body>
+        <ui:include src="/template/client-header.xhtml"/>
+        <h:form>
+            <h:outputLabel value="" for="sortSelect"/>
+            <h:selectOneMenu style="margin-left: 200px; margin-top: 30px; font-size: 14pt" styleClass="select-sort" id="sortSelect" value="#{productClientMB.sortOption}" onchange="submit()">
+                <f:selectItem itemValue="A-Z" itemLabel="A → Z"/>
+                <f:selectItem itemValue="Z-A" itemLabel="Z → A"/>
+                <f:selectItem itemValue="Low-High" itemLabel="Low → High Price"/>
+                <f:selectItem itemValue="High-Low" itemLabel="High → Low Price"/>
+            </h:selectOneMenu>
+        </h:form>
+        <h:panelGroup id="productGrid" rendered="#{not empty productClientMB.sneakerProducts}">
+            <div class="all-products-grid">
+                <ui:repeat value="#{productClientMB.sneakerProducts}" var="p">
+                    <!--                <div class="product-card">-->
+                    <a href="/StarShoe-war/client/product-detail.xhtml?id=#{p.productID}" class="product-card fly-up" style="margin-top: 50px;">
+
+                        <div class="product-img-wrap">
+                            <img src="#{resource['images/products/' += p.image]}" alt="#{p.productName}" />
+                        </div>
+
+                        <div class="product-name">#{p.productName}</div>
+
+                        <div class="product-price">
+                            <h:outputText value="#{p.price}">
+                                <f:convertNumber type="currency" currencySymbol="$" groupingUsed="true"/>
+                            </h:outputText>
+                        </div>
+
+                        <div class="stars" >
+                            <ui:repeat value="#{[1,2,3,4,5]}" var="i">
+                                <h:outputText style="color: gold; font-size:18px;" value="#{i le p.averageRating ? '★' : '☆'}" />
+                            </ui:repeat>
+                            (#{p.averageRating})
+                        </div>
+                    </a>
+                    <!--                </div>-->
+                </ui:repeat>
+            </div>
+        </h:panelGroup>
+        <h:panelGroup rendered="#{empty productClientMB.sneakerProducts}">
+            <p>No Sneaker products found.</p>
+        </h:panelGroup>
+        <ui:include src="/template/footer.xhtml" />
+    </h:body>
+</html>

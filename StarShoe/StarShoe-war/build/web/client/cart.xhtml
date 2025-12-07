@@ -1,0 +1,95 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Cart</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/client.css"/>
+    </h:head>
+    <h:body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <ui:include src="/template/client-header.xhtml"/>
+        <h:form class="cart-container" id="cartForm">
+            <h3 class="cart-header">Your Shopping Cart</h3>
+            
+            <h:panelGroup rendered="#{cartMB.cartItems.isEmpty()}">
+                <p style="text-align: center; color: #666; font-size: 16px; margin: 40px 0;">
+                    Your cart is empty. <a href="#{request.contextPath}/client/index.xhtml">Continue Shopping</a>
+                </p>
+            </h:panelGroup>
+
+            <h:dataTable value="#{cartMB.cartItems}" var="item" styleClass="cart-table" rendered="#{not cartMB.cartItems.isEmpty()}">
+                <h:column>
+                    <f:facet name="header">Product</f:facet>
+                    <div styleClass="#{item.product.quantity le 0 ? 'out-of-stock' : ''}">
+                        <h:outputText value="#{item.product.productName}" styleClass="product-name"/>
+                        <h:outputText value="Out of Stock" rendered="#{item.product.quantity le 0}" style="display: block; color: #ff6a00; font-weight: 700; font-size: 12px; margin-top: 4px;"/>
+                    </div>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Size</f:facet>
+                    <h:outputText value="#{item.size}" styleClass="product-size"/>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Price</f:facet>
+                    <h:outputText value="#{item.product.price}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Quantity</f:facet>
+                    <div class="quantity-control">
+                        <h:commandButton value="−" action="#{cartMB.updateQuantity(item, item.quantity - 1)}" styleClass="qty-btn qty-minus" disabled="#{item.product.quantity le 0}">
+                            <f:ajax execute="@this" render="@form"/>
+                        </h:commandButton>
+                        <h:inputText value="#{item.quantity}" styleClass="quantity-input" style="width: 50px; text-align: center;" disabled="#{item.product.quantity le 0}">
+                            <f:validateLongRange minimum="0" maximum="999"/>
+                            <f:ajax event="change" listener="#{cartMB.updateQuantity(item, item.quantity)}" render="@form"/>
+                        </h:inputText>
+                        <h:commandButton value="+" action="#{cartMB.updateQuantity(item, item.quantity + 1)}" styleClass="qty-btn qty-plus" disabled="#{item.product.quantity le 0}">
+                            <f:ajax execute="@this" render="@form"/>
+                        </h:commandButton>
+                    </div>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Total</f:facet>
+                    <h:outputText value="#{item.total}">
+                        <f:convertNumber type="currency" currencySymbol="$"/>
+                    </h:outputText>
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Action</f:facet>
+                    <h:commandButton value="Remove" action="#{cartMB.removeItem(item)}" styleClass="btn btn-remove">
+                        <f:ajax execute="@this" render="@form"/>
+                    </h:commandButton>
+                </h:column>
+            </h:dataTable>
+
+            <h:panelGroup rendered="#{not cartMB.cartItems.isEmpty()}">
+                <h:panelGroup rendered="#{cartMB.hasOutOfStockItems()}">
+                    <div style="background: #f8d7da; color: #721c24; padding: 12px; border-radius: 4px; margin: 20px 0; border: 1px solid #f5c6cb;">
+                        <strong>Warning:</strong> Some items in your cart are out of stock. Please remove them before proceeding to checkout.
+                    </div>
+                </h:panelGroup>
+
+                <div class="cart-summary" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+                    <h3 class="cart-total" style="text-align: right; font-size: 22px;">
+                        Total: 
+                        <h:outputText value="#{cartMB.totalAmount}" style="color: #ff6a00; font-weight: bold;">
+                            <f:convertNumber type="currency" currencySymbol="$"/>
+                        </h:outputText>
+                    </h3>
+
+                    <div style="text-align: right; margin-top: 20px;">
+                        <h:link value="Continue Shopping" outcome="/client/index" styleClass="btn btn-secondary" style="margin-right: 10px; display: inline-block; padding: 8px 16px; text-decoration: none; color: white; background: #666; border-radius: 4px;"/>
+                        <h:commandButton value="Proceed to Checkout" action="#{cartMB.buyNow}" styleClass="btn btn-buy" style="background: #ff6a00;" disabled="#{cartMB.hasOutOfStockItems()}"/>
+                    </div>
+                </div>
+            </h:panelGroup>
+        </h:form>
+
+        <ui:include src="/template/footer.xhtml"/>
+    </h:body>
+
+</html>

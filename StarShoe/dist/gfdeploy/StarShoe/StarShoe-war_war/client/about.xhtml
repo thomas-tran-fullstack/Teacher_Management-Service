@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>About Us - StarShoe</title>
+    <link rel="stylesheet" href="#{request.contextPath}/resources/css/client.css"/>
+</h:head>
+
+<h:body class="about-page">
+
+    <ui:include src="/template/client-header.xhtml"/>
+
+    <!-- HERO -->
+    <section class="about-hero">
+        <h1>About StarShoe</h1>
+        <p>Where passion meets craftsmanship, and every step begins with purpose.</p>
+    </section>
+
+    <!-- STORY -->
+    <section class="about-story">
+        <h2>Our Story</h2>
+        <p>
+            StarShoe was founded with a single mission — to redefine footwear excellence in Vietnam and beyond.
+            What started as a small shop in Can Tho has grown into a trusted destination for sneaker lovers,
+            athletes, and dreamers across the region.
+        </p>
+        <p>
+            Our journey is built on authenticity, comfort, design, and customer trust.
+            Every pair we offer reflects dedication, innovation, and a passion for movement.
+        </p>
+        <p>
+            Today, StarShoe proudly serves customers nationwide, staying committed to high-quality products and
+            world-class service. We believe every step you take should inspire confidence and ambition.
+        </p>
+    </section>
+
+    <!-- Vision box -->
+    <section class="about-box">
+        <h2>Mission &amp; Vision</h2>
+        <p>
+            To empower every individual with quality footwear that blends performance, style,
+            and comfort — helping you walk further, run faster, and shine brighter.
+        </p>
+    </section>
+
+    <!-- PARTNERS -->
+    <section class="about-img-block">
+        <h2>Global Partnerships</h2>
+        <img src="#{resource['images/company1.JPG']}" class="about-img"/>
+        <p>
+            We collaborate with international brands and manufacturers to bring authentic, premium footwear
+            and exceptional service to our customers.
+        </p>
+    </section>
+
+    <!-- HQ -->
+    <section class="about-img-block">
+        <h2>Our Headquarters</h2>
+        <img src="#{resource['images/company2.jpg']}" class="about-img"/>
+        <p>
+            Our headquarters in Can Tho represents innovation and customer-first dedication — values we continue
+            to grow every day.
+        </p>
+    </section>
+
+    <!-- CONTACT -->
+    <section class="about-contact">
+        <h2>Contact &amp; Visit Us</h2>
+        <p><b>Address:</b> Số 1 Lý Tự Trọng, An Phú, Ninh Kiều, Cần Thơ</p>
+        <p><b>Email:</b> tbtoana23141@cusc.ctu.edu.vn</p>
+        <p><b>Order hotline:</b> 0343617067</p>
+        <p><b>Customer Support:</b> 0334808852</p>
+
+        <!-- MAP — NO & — JSF SAFE -->
+        <div class="map-box">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.31621989488!2d105.780568!3d10.033029!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31a08837c65a77c3:0x39bc390d05e9e8a1!2zMSBMw70gVMO5IFRyw7RuZywgQW4gUGjDuiwgTmluaCBLaeG7gXUsIEPhuqdjIFRo4bqnbiwgVmnhu4d0IE5hbQ!5e0!3m2!1sen!2s!4v1701234567890"
+                width="100%"
+                height="300"
+                style="border:0"
+                allowfullscreen=""
+                loading="lazy">
+            </iframe>
+        </div>
+    </section>
+
+    <ui:include src="/template/footer.xhtml"/>
+
+</h:body>
+</html>

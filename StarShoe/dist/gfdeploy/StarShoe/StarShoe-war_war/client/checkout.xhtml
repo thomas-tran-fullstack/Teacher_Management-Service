@@ -1,0 +1,187 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="jakarta.faces.html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="jakarta.faces.core"
+                xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <h:head>
+        <title>Checkout - StarShoe</title>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/client.css"/>
+        <style>
+            .checkout-wrapper {
+                max-width: 1000px;
+                margin: 40px auto;
+                padding: 0 20px;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 30px;
+            }
+            .checkout-section {
+                background: white;
+                padding: 24px;
+                border-radius: 8px;
+                border: 1px solid #e0e0e0;
+            }
+            .checkout-section h3 {
+                font-size: 20px;
+                font-weight: 700;
+                color: var(--primary-color);
+                margin-bottom: 18px;
+                border-bottom: 2px solid var(--accent-color);
+                padding-bottom: 10px;
+            }
+            .form-group {
+                margin-bottom: 16px;
+            }
+            .form-group label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 600;
+                color: var(--primary-color);
+                font-size: 14px;
+            }
+            .form-group input, .form-group textarea {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 6px;
+                font-size: 14px;
+                box-sizing: border-box;
+            }
+            .form-group input:focus, .form-group textarea:focus {
+                outline: none;
+                border-color: var(--accent-color);
+                box-shadow: 0 0 8px rgba(255,106,0,0.15);
+            }
+            .btn-place-order {
+                width: 100%;
+                padding: 12px;
+                background-color: var(--accent-color);
+                color: white;
+                border: none;
+                border-radius: 6px;
+                font-size: 16px;
+                font-weight: 700;
+                cursor: pointer;
+                margin-top: 20px;
+                transition: 0.18s;
+            }
+            .btn-place-order:hover {
+                transform: translateY(-2px);
+                opacity: .98;
+            }
+            .order-summary-item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 12px 0;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            .order-summary-item:last-child {
+                border-bottom: none;
+            }
+            .order-total {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 16px 0;
+                border-top: 2px solid var(--accent-color);
+                font-size: 18px;
+                font-weight: 700;
+                color: var(--primary-color);
+            }
+            .empty-cart-msg {
+                text-align: center;
+                padding: 60px 20px;
+                color: #666;
+            }
+            @media (max-width: 768px) {
+                .checkout-wrapper {
+                    grid-template-columns: 1fr;
+                }
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <ui:include src="/template/client-header.xhtml"/>
+
+        <h:panelGroup rendered="#{empty cartMB.cartItems}">
+            <div class="empty-cart-msg">
+                <h2>Your cart is empty</h2>
+                <p><a href="#{request.contextPath}/client/index.xhtml">Return to shopping</a></p>
+            </div>
+        </h:panelGroup>
+
+        <h:panelGroup rendered="#{not empty cartMB.cartItems}">
+            <div class="checkout-wrapper">
+                <!-- Order Summary (Left) -->
+                <div class="checkout-section">
+                    <h3>Order Summary</h3>
+                    <div style="margin-bottom: 20px;">
+                        <ui:repeat value="#{cartMB.cartItems}" var="item">
+                            <div class="order-summary-item">
+                                <div>
+                                    <strong>#{item.product.productName}</strong><br/>
+                                    Qty: #{item.quantity} × 
+                                    <h:outputText value="#{item.product.price}">
+                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                    </h:outputText>
+                                </div>
+                                <div style="font-weight: 700;">
+                                    <h:outputText value="#{item.total}">
+                                        <f:convertNumber type="currency" currencySymbol="$"/>
+                                    </h:outputText>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                    <div class="order-total">
+                        <span>Total:</span>
+                        <span style="color: var(--accent-color);">
+                            <h:outputText value="#{cartMB.totalAmount}">
+                                <f:convertNumber type="currency" currencySymbol="$"/>
+                            </h:outputText>
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Customer Info Form (Right) -->
+                <h:form id="checkoutForm" class="checkout-section">
+                    <h3>Shipping Information</h3>
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <h:inputText id="fullName" value="#{checkoutMB.fullName}" 
+                                     pt:placeholder="Enter your full name" required="true"
+                                     requiredMessage="Full name is required."/>
+                        <h:message for="fullName" styleClass="error-msg" style="color: red; font-size: 12px;"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <h:inputText id="phone" value="#{checkoutMB.phone}"
+                                     pt:placeholder="Enter your phone number" required="true"
+                                     requiredMessage="Phone number is required."/>
+                        <h:message for="phone" styleClass="error-msg" style="color: red; font-size: 12px;"/>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address">Delivery Address</label>
+                        <h:inputTextarea id="address" value="#{checkoutMB.address}" 
+                                         pt:placeholder="Enter your delivery address" rows="4" required="true"
+                                         requiredMessage="Address is required."/>
+                        <h:message for="address" styleClass="error-msg" style="color: red; font-size: 12px;"/>
+                    </div>
+
+                    <h:messages globalOnly="true" layout="table" 
+                               styleClass="msg" style="color: red; margin: 12px 0; font-weight: 700;"/>
+
+                    <h:commandButton value="Place Order" action="#{checkoutMB.placeOrder}" 
+                                    styleClass="btn-place-order" id="submitBtn">
+                        <f:ajax execute="@form" render="@form"/>
+                    </h:commandButton>
+                </h:form>
+            </div>
+        </h:panelGroup>
+
+        <ui:include src="/template/footer.xhtml"/>
+    </h:body>
+</ui:composition>

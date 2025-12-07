@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:head>
+        <title>StarShoe - Home</title>
+        <h:outputStylesheet library="css" name="client.css"/>
+        <link rel="stylesheet" href="#{request.contextPath}/resources/css/client.css" />
+
+    </h:head>
+
+    <h:body class="client-page">
+        <!-- Load new product -->
+        <f:metadata>
+            <f:viewAction action="#{productMB.reload}" />
+        </f:metadata>
+
+
+        <!-- Banner Quang cao -->
+        <ui:include src="/template/client-header.xhtml" />
+
+        <!-- Premium Hero Slider -->
+        <div style="width:100%;background:linear-gradient(135deg, #f5f5f5, #ffffff);padding-top:60px;padding-bottom:60px;overflow:hidden;">
+            <div style="width:100%;position:relative;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.12);backdrop-filter:blur(10px);">
+                
+                <!-- Slider Container -->
+                <div class="hero-slider" style="position:relative;width:100%;padding-top:35%;overflow:hidden;background:#000;">
+                    
+                    <!-- Slides -->
+                    <div class="slides-wrapper" style="position:absolute;top:0;left:0;width:100%;height:100%;overflow:hidden;margin-top:0;">
+                        <img src="#{request.contextPath}/resources/images/ad1.jpg" class="slide active" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:1;transition:opacity 0.8s ease;"/>
+                        <img src="#{request.contextPath}/resources/images/ad2.jpg" class="slide" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.8s ease;"/>
+                        <img src="#{request.contextPath}/resources/images/ad3.jpg" class="slide" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.8s ease;"/>
+                        <img src="#{request.contextPath}/resources/images/ad4.jpg" class="slide" style="position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity 0.8s ease;"/>
+                    </div>
+
+                    <!-- Dark Overlay (bỏ đi ánh sáng cam) -->
+                    <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, rgba(0,0,0,0.2), rgba(0,0,0,0.15));z-index:2;"></div>
+
+                    <!-- Previous Button -->
+                    <button class="slide-btn prev" onclick="prevSlide()" style="position:absolute;left:16px;top:50%;transform:translateY(-50%);z-index:10;background:rgba(255,255,255,0.9);width:48px;height:48px;border:none;border-radius:10px;font-size:28px;cursor:pointer;transition:all 0.3s ease;box-shadow:0 6px 20px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;color:#333;font-weight:bold;" onmouseover="this.style.background='rgba(255,255,255,1)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)';this.style.transform='translateY(-50%) scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.9)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.15)';this.style.transform='translateY(-50%) scale(1)'">‹</button>
+
+                    <!-- Next Button -->
+                    <button class="slide-btn next" onclick="nextSlide()" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);z-index:10;background:rgba(255,255,255,0.9);width:48px;height:48px;border:none;border-radius:10px;font-size:28px;cursor:pointer;transition:all 0.3s ease;box-shadow:0 6px 20px rgba(0,0,0,0.15);display:flex;align-items:center;justify-content:center;color:#333;font-weight:bold;" onmouseover="this.style.background='rgba(255,255,255,1)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.2)';this.style.transform='translateY(-50%) scale(1.05)'" onmouseout="this.style.background='rgba(255,255,255,0.9)';this.style.boxShadow='0 6px 20px rgba(0,0,0,0.15)';this.style.transform='translateY(-50%) scale(1)'">›</button>
+                </div>
+
+                <!-- Slide Indicators -->
+                <div class="slide-indicators" style="position:absolute;bottom:16px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:10px;justify-content:center;">
+                    <span class="indicator active" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.85);cursor:pointer;transition:all 0.3s ease;box-shadow:0 3px 10px rgba(0,0,0,0.15);" onclick="showSlide(0)"></span>
+                    <span class="indicator" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.3s ease;box-shadow:0 3px 10px rgba(0,0,0,0.15);" onclick="showSlide(1)"></span>
+                    <span class="indicator" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.3s ease;box-shadow:0 3px 10px rgba(0,0,0,0.15);" onclick="showSlide(2)"></span>
+                    <span class="indicator" style="width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.4);cursor:pointer;transition:all 0.3s ease;box-shadow:0 3px 10px rgba(0,0,0,0.15);" onclick="showSlide(3)"></span>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            let ws = new WebSocket("ws://" + window.location.host + "/StarShoe-war/productUpdates");
+
+            ws.onmessage = function (event) {
+                if (event.data === "refresh") {
+                    location.reload();
+                }
+            };
+            let current = 0;
+            const slides = document.querySelectorAll(".slide");
+            const indicators = document.querySelectorAll(".indicator");
+
+            function showSlide(i) {
+                slides.forEach((s, idx) => {
+                    s.style.opacity = idx === i ? '1' : '0';
+                });
+                indicators.forEach((ind, idx) => {
+                    ind.style.background = idx === i ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.5)';
+                });
+                current = i;
+            }
+
+            function nextSlide() {
+                current = (current + 1) % slides.length;
+                showSlide(current);
+            }
+
+            function prevSlide() {
+                current = (current - 1 + slides.length) % slides.length;
+                showSlide(current);
+            }
+
+            // auto rotate every 5 seconds
+            setInterval(nextSlide, 5000);
+        </script>
+        
+        <!-- Category Title Section -->
+        <div style="max-width:1400px;margin:60px auto 40px auto;padding:0 24px;">
+            <h3 style="font-size:32px;font-weight:800;color:#1a1a1a;margin:0;letter-spacing:-0.5px;">Explore Categories</h3>
+            <div style="width:80px;height:4px;background:linear-gradient(90deg, #ff6b00, #ffb347);border-radius:4px;margin-top:12px;"></div>
+        </div>
+
+        <!-- Category Grid - Responsive -->
+        <div style="max-width:1400px;margin:0 auto 80px auto;padding:0 24px;">
+            <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:24px;">
+
+                <a href="/StarShoe-war/client/casual.xhtml" style="text-decoration:none;display:block;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,0.1);transition:all 0.4s ease;position:relative;group:hover;" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 20px 48px rgba(255,107,0,0.25)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.1)'">
+                    <div style="position:relative;overflow:hidden;height:240px;">
+                        <img src="#{resource['images/casual.jpg']}" alt="Casual" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+                        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, rgba(0,0,0,0.2), rgba(255,107,0,0.3));"></div>
+                    </div>
+                    <div style="padding:20px;background:#fff;text-align:center;">
+                        <span style="font-size:18px;font-weight:800;color:#333;display:block;letter-spacing:-0.5px;">Casual</span>
+                        <span style="font-size:13px;color:#888;margin-top:8px;display:block;">Comfortable &amp; Stylish</span>
+                    </div>
+                </a>
+
+                <a href="/StarShoe-war/client/running.xhtml" style="text-decoration:none;display:block;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,0.1);transition:all 0.4s ease;position:relative;" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 20px 48px rgba(255,107,0,0.25)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.1)'">
+                    <div style="position:relative;overflow:hidden;height:240px;">
+                        <img src="#{resource['images/running.jpg']}" alt="Running" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+                        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, rgba(0,0,0,0.2), rgba(255,107,0,0.3));"></div>
+                    </div>
+                    <div style="padding:20px;background:#fff;text-align:center;">
+                        <span style="font-size:18px;font-weight:800;color:#333;display:block;letter-spacing:-0.5px;">Running</span>
+                        <span style="font-size:13px;color:#888;margin-top:8px;display:block;">Performance First</span>
+                    </div>
+                </a>
+
+                <a href="/StarShoe-war/client/sport.xhtml" style="text-decoration:none;display:block;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,0.1);transition:all 0.4s ease;position:relative;" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 20px 48px rgba(255,107,0,0.25)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.1)'">
+                    <div style="position:relative;overflow:hidden;height:240px;">
+                        <img src="#{resource['images/sport.jpg']}" alt="Sport" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+                        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, rgba(0,0,0,0.2), rgba(255,107,0,0.3));"></div>
+                    </div>
+                    <div style="padding:20px;background:#fff;text-align:center;">
+                        <span style="font-size:18px;font-weight:800;color:#333;display:block;letter-spacing:-0.5px;">Sport</span>
+                        <span style="font-size:13px;color:#888;margin-top:8px;display:block;">Active Lifestyle</span>
+                    </div>
+                </a>
+
+                <a href="/StarShoe-war/client/sneaker.xhtml" style="text-decoration:none;display:block;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,0.1);transition:all 0.4s ease;position:relative;" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 20px 48px rgba(255,107,0,0.25)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.1)'">
+                    <div style="position:relative;overflow:hidden;height:240px;">
+                        <img src="#{resource['images/sneaker.jpg']}" alt="Sneaker" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+                        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, rgba(0,0,0,0.2), rgba(255,107,0,0.3));"></div>
+                    </div>
+                    <div style="padding:20px;background:#fff;text-align:center;">
+                        <span style="font-size:18px;font-weight:800;color:#333;display:block;letter-spacing:-0.5px;">Sneaker</span>
+                        <span style="font-size:13px;color:#888;margin-top:8px;display:block;">Urban Culture</span>
+                    </div>
+                </a>
+
+                <a href="/StarShoe-war/client/training.xhtml" style="text-decoration:none;display:block;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,0.1);transition:all 0.4s ease;position:relative;" onmouseover="this.style.transform='translateY(-8px)';this.style.boxShadow='0 20px 48px rgba(255,107,0,0.25)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 12px 32px rgba(0,0,0,0.1)'">
+                    <div style="position:relative;overflow:hidden;height:240px;">
+                        <img src="#{resource['images/training.jpg']}" alt="Training" style="width:100%;height:100%;object-fit:cover;transition:transform 0.4s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'"/>
+                        <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, rgba(0,0,0,0.2), rgba(255,107,0,0.3));"></div>
+                    </div>
+                    <div style="padding:20px;background:#fff;text-align:center;">
+                        <span style="font-size:18px;font-weight:800;color:#333;display:block;letter-spacing:-0.5px;">Training</span>
+                        <span style="font-size:13px;color:#888;margin-top:8px;display:block;">Intense Workouts</span>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+        
+        <!-- Hot Sale section -->
+        <div style="max-width:1400px;margin:80px auto 40px auto;padding:0 24px;">
+            <h3 style="font-size:32px;font-weight:800;color:#1a1a1a;margin:0;letter-spacing:-0.5px;">🔥 Hot Deals</h3>
+            <div style="width:80px;height:4px;background:linear-gradient(90deg, #ff6b00, #ffb347);border-radius:4px;margin-top:12px;"></div>
+        </div>
+
+        <div class="hot-grid">
+
+            <ui:repeat value="#{productMB.hotProducts}" var="p">
+
+                <a href="/StarShoe-war/client/product-detail.xhtml?id=#{p.productID}" class="product-card fly-up">
+
+                    <div class="product-img-wrap">
+                        <span class="hot-ribbon">HOT</span>
+                        <img src="#{resource['images/products/' += p.image]}" alt="#{p.productName}" />
+                    </div>
+
+                    <div class="product-name">#{p.productName}</div>
+
+                    <div class="product-price">
+                        <h:outputText value="#{p.price}">
+                            <f:convertNumber type="currency" currencySymbol="$" groupingUsed="true"/>
+                        </h:outputText>
+                    </div>
+
+                    <!-- Rating (if exists) -->
+                    <div class="stars">
+                        <ui:repeat value="#{[1,2,3,4,5]}" var="i">
+                            <h:outputText class="span" value="#{i le p.averageRating ? '★' : '☆'}" />
+                        </ui:repeat>
+                        (#{p.averageRating})
+                    </div>
+                </a>
+            </ui:repeat>
+        </div>
+        
+        <!-- Full Width Ad Banner -->
+        <div style="max-width:1400px;margin:80px auto;padding:0 24px;">
+            <div style="position:relative;border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.15);height:280px;background:#000;">
+                <img src="#{resource['images/ad5.jpg']}" alt="Ad Banner" style="width:100%;height:100%;object-fit:cover;"/>
+                <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg, rgba(0,0,0,0.4), rgba(255,107,0,0.2));"></div>
+            </div>
+        </div>
+        
+        <!-- ===== All Products ===== -->
+        <div style="max-width:1400px;margin:80px auto 40px auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;">
+            <h3 style="font-size:32px;font-weight:800;color:#1a1a1a;margin:0;letter-spacing:-0.5px;">Featured Products</h3>
+
+            <h:form id="sortForm" style="margin:0;">
+                <h:selectOneMenu id="sortSelect" value="#{productMB.sortOption}" styleClass="select-sort" style="padding:10px 16px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:14px;background:#fff;cursor:pointer;transition:all 0.3s ease;font-weight:600;" onchange="this.form.submit();">
+                    <f:selectItem itemLabel="A → Z" itemValue="AZ" />
+                    <f:selectItem itemLabel="Z → A" itemValue="ZA" />
+                    <f:selectItem itemLabel="Low → High price" itemValue="PRICE_ASC" />
+                    <f:selectItem itemLabel="High → Low price" itemValue="PRICE_DESC" />
+
+                    <f:ajax event="change"
+                            listener="#{productMB.onSortChange}"
+                            render="productGrid pager"
+                            execute="@this"/>
+
+                </h:selectOneMenu>
+            </h:form>
+
+        </div>
+
+        <h:panelGroup id="productGrid">
+            <div class="all-products-grid">
+                <ui:repeat value="#{productMB.currentPageProducts}" var="p">
+
+                    <a href="/StarShoe-war/client/product-detail.xhtml?id=#{p.productID}" class="product-card fly-up">
+
+                        <div class="product-img-wrap">
+                            <img src="#{resource['images/products/' += p.image]}" alt="#{p.productName}" />
+                        </div>
+
+                        <div class="product-name">#{p.productName}</div>
+
+                        <div class="product-price">
+                            <h:outputText value="#{p.price}">
+                                <f:convertNumber type="currency" currencySymbol="$" groupingUsed="true"/>
+                            </h:outputText>
+                        </div>
+
+                        <div class="stars" >
+                            <ui:repeat value="#{[1,2,3,4,5]}" var="i">
+                                <h:outputText style="color: gold; font-size:18px;" value="#{i le p.averageRating ? '★' : '☆'}" />
+                            </ui:repeat>
+                            (#{p.averageRating})
+                        </div>
+                    </a>
+                </ui:repeat>
+            </div>
+        </h:panelGroup>
+
+        <!-- Pagination -->
+        <div id="paper" class="pagination">
+            <h:form>
+                <ui:repeat value="#{productMB.pageNumbers}" var="pg">
+                    <h:commandButton value="#{pg}"
+                                     action="#{productMB.changePage(pg)}"
+                                     styleClass="#{pg eq productMB.currentPage ? 'page-btn active' : 'page-btn'}" />
+                </ui:repeat>
+            </h:form>
+        </div>
+
+        <ui:include src="/template/footer.xhtml" />
+    </h:body>
+</html>

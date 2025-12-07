@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Category Management - StarShoe</title>
+    <h:outputStylesheet library="css" name="admin.css" />
+</h:head>
+
+<h:body>
+    <!-- HEADER -->
+    <ui:include src="/template/admin-header.xhtml" />
+
+    <!-- SIDEBAR -->
+    <ui:include src="/template/admin-sidebar.xhtml" />
+
+    <div class="main-content">
+        <div class="form-container">
+            <!-- ADD/EDIT FORM -->
+            <h:form styleClass="add-form">
+                <h:messages globalOnly="true" style="color:green; font-weight:bold; margin-top:10px;" />
+                <h3>Add / Edit Category</h3>
+                <table class="form-table">
+                    <tr>
+                        <td>Category Name:</td>
+                        <td><h:inputText id="cateName" value="#{categoryMB.selectedCategory.categoryName}" required="true" requiredMessage="Category name is required" /></td>
+                         <td><h:message for="cateName" style="color:red;font-size:12px;" /></td>
+                    </tr>
+                </table>
+
+                <h:commandButton value="Confirm" action="#{categoryMB.confirm}" styleClass="btn-confirm" />
+                <h:commandButton value="Reset" action="#{categoryMB.resetForm}" immediate="true" styleClass="btn-reset" />
+            </h:form>
+
+            <!-- SEARCH -->
+            <h:form styleClass="search-bar">
+                <h3>Search Category</h3>
+                <h:inputText styleClass="search" value="#{categoryMB.searchKeyword}">
+                    <f:passThroughAttribute name="placeholder" value="Enter category name..." />
+                </h:inputText>
+                <h:commandButton value="Search" action="#{categoryMB.search}" styleClass="btn-search" />
+            </h:form>
+        </div>
+
+        <!-- BRAND TABLE -->
+        <h:form>
+            <h:dataTable value="#{categoryMB.categoryList}" var="c" border="1" styleClass="product-table">
+                <h:column>
+                    <f:facet name="header">ID</f:facet>
+                    #{c.categoryID}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Category Name</f:facet>
+                    #{c.categoryName}
+                </h:column>
+                <h:column>
+                    <f:facet name="header">Action</f:facet>
+                    <h:commandLink action="#{categoryMB.prepareEdit(c)}" styleClass="action-icon" title="Edit">
+                        <h:graphicImage library="images" name="edit.png" alt="Edit" />
+                    </h:commandLink>
+                    <h:commandLink action="#{categoryMB.delete(c)}" styleClass="action-icon"
+                                   title="Delete" onclick="return confirm('Are you sure?');">
+                        <h:graphicImage library="images" name="delete.png" alt="Delete" />
+                    </h:commandLink>
+                </h:column>
+            </h:dataTable>
+        </h:form>
+    </div>
+
+
+</h:body>
+</html>
