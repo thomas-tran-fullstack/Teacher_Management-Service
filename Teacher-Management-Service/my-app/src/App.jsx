@@ -12,6 +12,7 @@ import ManageTeacher from './pages/ManageTeacher';
 import AddTeacher from './pages/AddTeacher';
 import TeacherDashboard from './pages/TeacherDashboard';
 import ModuleSelection from './pages/ModuleSelection';
+import EvidenceDetail from './pages/teacher/EvidenceDetail';
 
 // Admin pages
 import SubjectRegistrationManagement from './pages/admin/SubjectRegistrationManagement';
@@ -61,6 +62,8 @@ import AdminAptechSesssionExamAdd from "./pages/admin/AdminAptechSesssionExamAdd
 import AdminAptechSessionList from "./pages/admin/AdminAptechSessionList.jsx";
 import AptechExamDetail from "./pages/teacher/AptechExamDetail.jsx";
 import TeacherRegisterNew from "./pages/teacher/TeacherRegisterNew.jsx";
+import AdminDashboard from './pages/AdminDashboard';
+import FAQ from './pages/FAQ';
 
 function AppRoutes() {
   const { isAuthenticated, user } = useAuth();
@@ -80,6 +83,10 @@ function AppRoutes() {
       <Route
         path="/login"
         element={isAuthenticated ? <Navigate to={user?.role === 'Manage-Leader' || user?.role === 'admin' ? '/module-selection' : '/module-selection'} replace /> : <Login />}
+      />
+      <Route
+        path="/faqs"
+        element={<FAQ />}
       />
       <Route
         path="/forgot-password"
@@ -179,6 +186,15 @@ function AppRoutes() {
         element={
           <ProtectedRoute allowedRoles={['Manage-Leader', 'Teacher']}>
             <TeacherDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin-dashboard"
+        element={
+          <ProtectedRoute requiredRole="Manage-Leader">
+            <AdminDashboard />
           </ProtectedRoute>
         }
       />
@@ -432,6 +448,14 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+       <Route
+              path="/evidence-detail/:id"
+              element={
+                <ProtectedRoute allowedRoles={['Manage-Leader', 'Teacher']}>
+                  <EvidenceDetail />
+                </ProtectedRoute>
+              }
+            />
       <Route
         path="/teacher-teaching-assignment"
         element={
